@@ -1,12 +1,5 @@
 ls
 hostname
-hostname
-hostname
-hostname
-hostname
-hostname
-hostname
-hostname
 python3 tasks/pepe.py
 hostname
 
