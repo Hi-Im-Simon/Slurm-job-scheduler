@@ -1,9 +1,12 @@
-import os, sys, time
+import os, sys, subprocess, random, time
 
 
 def removeFile(name):
     os.system(f'rm -f { name }')
 
+
+def getAvailableNodes():
+    return [node.decode('UTF-8')[1:-1] for node in subprocess.check_output(['sinfo', '--partition=all', '--states=idle', '--format="%n"']).split()[1:]]
 
 
 if len(sys.argv) < 2:
@@ -13,7 +16,7 @@ f"""Requires at least one argument:
 - task surrounded by quotation marks""")
 
 else:
-    jobs = []
+    tasks = []
     for arg in sys.argv[1:]:
         if arg[-4:] == '.txt':
             prefix = ''
@@ -24,22 +27,29 @@ else:
                 elif line[-1] == ':':
                     prefix = line[:-1]
                 else:
-                    jobs.append(f'{ prefix } { line }'.strip())
+                    tasks.append(f'{ prefix } { line }'.strip())
         else:
-            jobs.append(arg)
+            tasks.append(arg)
 
     removeFile('outputs/*')
 
-    for i, job in enumerate(jobs):
-        file = open('run.sh', 'w+')
+    for i, task in enumerate(tasks):
+        nodes = getAvailableNodes()
+        print(nodes)
 
+        while len(nodes) == 0:
+            nodes = getAvailableNodes()
+            time.sleep(0.1)
+
+        file = open('run.sh', 'w+')        
         file.write(
 f"""#!/bin/bash
 #SBATCH --output=outputs/out{ i }.log
+#SBATCH --partition=all
+#SBATCH --nodelist={ random.choice(nodes) }
 
-{ job }
+{ task }
 """)
         file.close()
-        
         os.system(f'sbatch run.sh')
     removeFile('run.sh')
