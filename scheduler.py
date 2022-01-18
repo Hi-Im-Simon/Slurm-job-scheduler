@@ -35,7 +35,6 @@ else:
 
     for i, task in enumerate(tasks):
         nodes = getAvailableNodes()
-        print(nodes)
 
         while len(nodes) == 0:
             nodes = getAvailableNodes()
