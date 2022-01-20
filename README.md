@@ -21,3 +21,5 @@ The ways to fill the file:
 - use a prefix methode to send multiple tasks using the same prefix (spaces are not required):
 
 ![image](https://user-images.githubusercontent.com/75808585/150393433-2123a73d-908f-4f4d-9866-0f257c1b0060.png)
+
+- use an empty line to exit from the prefix
