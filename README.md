@@ -16,6 +16,8 @@ There are a few things to make your life easier and avoid unnecessary code.
 
 The ways to fill the file:
 - simply provide tasks line by line:
+
 ![image](https://user-images.githubusercontent.com/75808585/150392859-d7767712-f55d-4332-9ea8-dbf032c382b8.png)
 - use a prefix methode to send multiple tasks using the same prefix (spaces are not required):
+
 ![image](https://user-images.githubusercontent.com/75808585/150393201-e224eb49-e07d-4d13-a643-eb071cdecec0.png)
