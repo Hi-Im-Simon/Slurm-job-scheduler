@@ -1,54 +1,40 @@
-import os, sys, subprocess, random, time
+import sys
+
+from scheduler_random import sched_random
+from scheduler_cycle import sched_cycle
+from scheduler_param import sched_param
+# def userInput():
 
 
-def removeFile(name):
-    os.system(f'rm -f { name }')
+ 
 
 
-def getAvailableNodes():
-    return [node.decode('UTF-8')[1:-1] for node in subprocess.check_output(['sinfo', '--partition=all', '--states=idle', '--format="%n"']).split()[1:]]
-
-
-if len(sys.argv) < 2:
+ 
+ 
+if len(sys.argv) < 3:
     print(
-f"""Requires at least one argument:
-- name of a .txt file containing a list of tasks
-- task surrounded by quotation marks""")
-
+f"""You need to provide 2 additional arguments:
+- path to the configuration file
+- name of the algorithm you want to use for scheduling (random, cycle, param)"""
+)
 else:
-    tasks = []
-    for arg in sys.argv[1:]:
-        if arg[-4:] == '.txt':
-            prefix = ''
-            for line in open(arg).readlines():
-                line = line.strip()
-                if len(line) == 0:
-                    prefix = ''
-                elif line[-1] == ':':
-                    prefix = line[:-1]
-                else:
-                    tasks.append(f'{ prefix } { line }'.strip())
+    conf = open(sys.argv[1])
+    args = dict()
+    
+    for line in conf.readlines():   #reading through the .conf file and adding parameters to a dictionary
+        line = line.split('=')
+        line = [line[i].strip() for i in range(len(line))]
+        args[line[0]] = line[1]
+    
+    if(args["SHARED"][-1] == '/'):
+        args["SHARED"] = args["SHARED"][:len(args["SHARED"])-1]
+    
+    if(sys.argv[2] == "random"):
+        sched_random(args)
+    elif(sys.argv[2] == "cycle"):
+        sched_cycle(args)
+    elif(sys.argv[2] == "param"):
+        if (len(sys.argv) < 4):
+            print("Error: Parametric scheduling requires third argument - threshold")   #taking a third initial argument - threshold
         else:
-            tasks.append(arg)
-
-    removeFile('outputs/*')
-
-    for i, task in enumerate(tasks):
-        nodes = getAvailableNodes()
-
-        while len(nodes) == 0:
-            nodes = getAvailableNodes()
-            time.sleep(0.1)
-
-        file = open('run.sh', 'w+')        
-        file.write(
-f"""#!/bin/bash
-#SBATCH --output=outputs/out{ i }.log
-#SBATCH --partition=all
-#SBATCH --nodelist={ random.choice(nodes) }
-
-{ task }
-""")
-        file.close()
-        os.system(f'sbatch run.sh')
-    removeFile('run.sh')
+            sched_param(args, sys.argv[3])

@@ -1,7 +1,2 @@
-ls
-hostname
-python3 tasks/pepe.py
 hostname
 
-python3:
-    tasks/eo.py

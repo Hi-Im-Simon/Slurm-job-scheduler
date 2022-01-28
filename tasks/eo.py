@@ -1,4 +1,4 @@
 import time
 
-time.sleep(10)
+time.sleep(100)
 print('2')
