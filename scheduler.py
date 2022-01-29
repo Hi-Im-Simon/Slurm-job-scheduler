@@ -3,12 +3,9 @@ import sys
 from scheduler_random import sched_random
 from scheduler_cycle import sched_cycle
 from scheduler_param import sched_param
+
+
 # def userInput():
-
-
- 
-
-
  
  
 if len(sys.argv) < 3:
